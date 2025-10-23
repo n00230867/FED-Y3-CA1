@@ -8,6 +8,7 @@ import Navbar from './components/Navbar';
 
 //import pages
 import Home from './pages/Home';
+import Regions from './pages/Regions';
 import SingleCountry from './pages/SingleCountry';
 
 export default function App () {
@@ -17,6 +18,7 @@ export default function App () {
                 <Navbar />
                 <Routes>
                     <Route path='/' element={<Home />} />
+                    <Route path='/Regions' element={<Regions />} />
                     <Route path='/country/:name' element={<SingleCountry />} />
                 </Routes>
             </Router>
