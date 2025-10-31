@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 
-const Navbar = () => {
+const Navbar = ({ setSearchText }) => {
     return (
         <div className="navbar bg-base-200 border-b border-base-300 shadow-md">
-            {/* Left side - Brand */}
+            
             <div className="flex-1">
                 <Link
                     to="/"
@@ -13,16 +13,14 @@ const Navbar = () => {
                 </Link>
             </div>
 
-            {/* Right side - Search + Avatar */}
             <div className="flex gap-2 items-center">
-                {/* Search box */}
                 <input
                     type="text"
                     placeholder="Search countries..."
                     className="input input-bordered border-base-300 bg-base-100 text-base-content w-28 md:w-auto focus:border-primary focus:outline-none transition-all duration-300"
+                    onChange={(e) => setSearchText(e.target.value)}
                 />
 
-                {/* Avatar Dropdown */}
                 <div className="dropdown dropdown-end">
                     <div
                         tabIndex={0}

@@ -46,11 +46,15 @@ export default function SingleCountry() {
     return (
         <div className="min-h-screen bg-base-100 text-base-content p-6">
             <div className="max-w-6xl mx-auto space-y-10">
-                {/* Header */}
-                <h1 className="text-4xl font-bold text-center">{country.name.common}</h1>
 
-                {/* Flag & Coat of Arms Section */}
+                {/* Header */}
+                <div className="flex items-center pb-3">
+                    <h1 className="text-4xl font-bold">{country.name.common}</h1>
+                </div>
+
+                {/* Flag & Coat of Arms */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    
                     {/* Flag Card */}
                     <div className="bg-base-200 border border-base-300 hover:border-primary/60 rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden">
                         <div className="flex items-center justify-center p-4">
@@ -61,33 +65,18 @@ export default function SingleCountry() {
                             />
                         </div>
                         <div className="p-6 space-y-2">
-                            <p className="text-base-content/80">
-                                <b>Official Name:</b> {country.name.official}
-                            </p>
-                            <p className="text-base-content/80">
-                                <b>Capital:</b> {country.capital?.join(", ") || "N/A"}
-                            </p>
-                            <p className="text-base-content/80">
-                                <b>Population:</b>{" "}
-                                {country.population?.toLocaleString() || "N/A"}
-                            </p>
-                            <p className="text-base-content/80">
-                                <b>Region:</b> {country.region || "N/A"}
-                            </p>
+                            <p className="text-base-content/80"><b>Official Name:</b> {country.name.official}</p>
+                            <p className="text-base-content/80"><b>Capital:</b> {country.capital?.join(", ") || "N/A"}</p>
+                            <p className="text-base-content/80"><b>Population:</b> {country.population?.toLocaleString() || "N/A"}</p>
+                            <p className="text-base-content/80"><b>Region:</b> {country.region || "N/A"}</p>
                             {country.subregion && (
-                                <p className="text-base-content/80">
-                                    <b>Subregion:</b> {country.subregion}
-                                </p>
+                                <p className="text-base-content/80"><b>Subregion:</b> {country.subregion}</p>
                             )}
 
                             <div className="flex flex-wrap gap-2 pt-3">
-                                <span className="px-3 py-1 rounded-full bg-base-300 text-sm">
-                                    {country.region}
-                                </span>
+                                <span className="px-3 py-1 rounded-full bg-base-300 text-sm">{country.region}</span>
                                 {country.subregion && (
-                                    <span className="px-3 py-1 rounded-full bg-base-300 text-sm">
-                                        {country.subregion}
-                                    </span>
+                                    <span className="px-3 py-1 rounded-full bg-base-300 text-sm">{country.subregion}</span>
                                 )}
                                 <span className="px-3 py-1 rounded-full bg-primary text-primary-content text-sm font-semibold">
                                     {country.cca2}
@@ -100,9 +89,7 @@ export default function SingleCountry() {
                     <div className="bg-base-200 border border-base-300 hover:border-primary/60 rounded-2xl shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col items-center justify-center p-6">
                         {country.coatOfArms?.png ? (
                             <>
-                                <h2 className="text-xl font-semibold mb-4 text-base-content">
-                                    Coat of Arms
-                                </h2>
+                                <h2 className="text-xl font-semibold mb-4 text-base-content">Coat of Arms</h2>
                                 <img
                                     src={country.coatOfArms.png}
                                     alt={`${country.name.common} coat of arms`}
@@ -119,15 +106,13 @@ export default function SingleCountry() {
                 <div>
                     <h2 className="text-2xl font-semibold mb-4 text-base-content">Currencies</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                        {currencies.length ? (
-                            currencies
-                        ) : (
+                        {currencies.length ? currencies : (
                             <p className="text-base-content/70">No currency data available.</p>
                         )}
                     </div>
                 </div>
 
-                {/* Map Section */}
+                {/* Map */}
                 <div>
                     <h2 className="text-2xl font-semibold mb-4 text-base-content">Map Location</h2>
                     <div className="rounded-xl overflow-hidden shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 border border-base-300 hover:border-primary/60">
@@ -139,12 +124,11 @@ export default function SingleCountry() {
                             loading="lazy"
                             allowFullScreen
                             referrerPolicy="no-referrer-when-downgrade"
-                            src={`https://www.google.com/maps?q=${encodeURIComponent(
-                                country.name.common
-                            )}&output=embed`}
+                            src={`https://www.google.com/maps?q=${encodeURIComponent(country.name.common)}&output=embed`}
                         ></iframe>
                     </div>
                 </div>
+
             </div>
         </div>
     );
