@@ -7,6 +7,8 @@ import Navbar from './components/Navbar';
 
 // pages
 import Home from './pages/Home';
+import Celebrities from './pages/Celebrities';
+import SingleCelebrity from './pages/SingleCelebrity';
 import SingleCountry from './pages/SingleCountry';
 
 export default function App() {
@@ -18,7 +20,9 @@ export default function App() {
                 <Navbar setSearchText={setSearchText} />
                 <Routes>
                     <Route path='/' element={<Home searchText={searchText} />} />
+                    <Route path='/celebrities' element={<Celebrities searchText={searchText} />} />
                     <Route path='/country/:name' element={<SingleCountry />} />
+                    <Route path='/celebrity/:name' element={<SingleCelebrity />} />
                 </Routes>
             </Router>
         </>
