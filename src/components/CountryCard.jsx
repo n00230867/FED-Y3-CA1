@@ -6,20 +6,19 @@ export default function CountryCard({ flagImg, name, capital }) {
     return (
         <div
             onClick={() => navigate(`/country/${name}`)}
-            className="flex items-center bg-base-200 dark:bg-base-200 rounded-xl shadow-md hover:shadow-lg p-4 cursor-pointer transition-all duration-300 border border-base-300 hover:border-primary/60"
+            className="relative flex flex-col bg-base-200 rounded-xl shadow-md hover:shadow-xl p-4 cursor-pointer transition-all duration-300 border border-base-300 hover:border-primary/60 min-h-60"
         >
             <img
                 src={flagImg}
                 alt={`${name} flag`}
-                className="w-28 h-20 object-cover rounded-lg mr-5 border border-base-300 dark:border-base-300 shadow-sm hover:shadow-md transition-all duration-300"
+                className="w-full h-32 object-cover rounded-lg border border-base-300 shadow-sm mb-3"
             />
-            <div className="flex flex-col justify-center">
+            <div>
                 <p className="font-semibold text-lg text-base-content mb-1">
                     {name}
                 </p>
                 <p className="text-sm text-base-content/70">
-                    <span className="font-medium text-base-content">Capital:</span>{" "}
-                    {capital.join(", ")}
+                    <span className="font-medium">Capital:</span> {capital.join(", ")}
                 </p>
             </div>
         </div>
