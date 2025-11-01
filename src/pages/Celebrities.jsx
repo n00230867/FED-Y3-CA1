@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import CelebrityCard from "../components/CelebrityCard";
+import { motion } from "motion/react";
+import { useLocation } from "react-router-dom";
 
 export default function Celebrities({ searchText }) {
 
-    // =========================
-    // Countries & Filters
-    // =========================
+    const location = useLocation();
     const [countries, setCountries] = useState([]);
     const [countryLookup, setCountryLookup] = useState([]);
     const [regions, setRegions] = useState([]);
@@ -14,37 +14,26 @@ export default function Celebrities({ searchText }) {
     const [regionFilter, setRegionFilter] = useState("All");
     const [countryFilter, setCountryFilter] = useState("All");
 
-    // =========================
-    // Celebrities & Loading
-    // =========================
     const [celebrities, setCelebrities] = useState([]);
     const [loading, setLoading] = useState(true);
     const [loadingMore, setLoadingMore] = useState(false);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
 
-
-    // =========================
-    // API: Load More Celebrities
-    // (Pagination)
-    // =========================
     async function loadMoreCelebs() {
         try {
             setLoadingMore(true);
-
             const res = await axios.get(
                 `https://api.themoviedb.org/3/person/popular?api_key=${
                     import.meta.env.VITE_TMDB_KEY
                 }&page=${page}`
             );
 
-            // Stop if no more results
             if (!res.data.results.length) {
                 setHasMore(false);
                 return;
             }
 
-            // Fetch full details for each celebrity
             const detailed = await Promise.all(
                 res.data.results.map(async person => {
                     const info = await axios.get(
@@ -65,7 +54,6 @@ export default function Celebrities({ searchText }) {
                 })
             );
 
-            // Merge new celebs + avoid duplicates
             setCelebrities(prev => {
                 const combined = [...prev, ...detailed];
                 return combined.filter(
@@ -74,23 +62,17 @@ export default function Celebrities({ searchText }) {
             });
 
             setPage(prev => prev + 1);
-        } catch (err) {
-            console.log("TMDB fetch error", err);
+        } catch {
+            console.log("TMDB fetch error");
         }
 
         setLoadingMore(false);
     }
 
-
-    // =========================
-    // API: Load countries + initial celebs
-    // =========================
     useEffect(() => {
         async function loadInitial() {
             setLoading(true);
-
             try {
-                // Fetch country data
                 const res = await axios.get(
                     "https://restcountries.com/v3.1/all?fields=name,region,altSpellings"
                 );
@@ -107,15 +89,13 @@ export default function Celebrities({ searchText }) {
                 setCountries(countryList);
                 setCountryLookup(countryList);
 
-                // Populate region + country filter dropdowns
                 const uniqueRegions = Array.from(new Set(countryList.map(c => c.region))).sort();
                 setRegions(["All", ...uniqueRegions]);
                 setCountryOptions(countryList.map(c => c.name).sort());
 
-                // Load first batch of celebs
                 await loadMoreCelebs();
-            } catch (err) {
-                console.log("Error loading countries", err);
+            } catch {
+                console.log("Error loading countries");
             }
 
             setLoading(false);
@@ -124,10 +104,6 @@ export default function Celebrities({ searchText }) {
         loadInitial();
     }, []);
 
-
-    // =========================
-    // Update country dropdown when region changes
-    // =========================
     useEffect(() => {
         if (regionFilter === "All") {
             setCountryOptions(countries.map(c => c.name).sort());
@@ -139,10 +115,6 @@ export default function Celebrities({ searchText }) {
         setCountryFilter("All");
     }, [regionFilter, countries]);
 
-
-    // =========================
-    // Helper: Match birthplace to a country
-    // =========================
     function findCountryFromBirthplace(place) {
         if (!place) return null;
         const text = place.toLowerCase();
@@ -157,10 +129,6 @@ export default function Celebrities({ searchText }) {
         return null;
     }
 
-
-    // =========================
-    // Filter celebrities based on search + region + country
-    // =========================
     const filteredCelebs = celebrities
         .filter(c => {
             const match = findCountryFromBirthplace(c.birthplace);
@@ -170,27 +138,26 @@ export default function Celebrities({ searchText }) {
         })
         .filter(c => c.name.toLowerCase().includes((searchText || "").toLowerCase()));
 
-
-    // =========================
-    // UI
-    // =========================
     return (
-        <div className="min-h-screen bg-base-100">
+        <div className="min-h-screen bg-base-100 text-base-content">
             <div className="max-w-7xl mx-auto p-6">
 
-                {/* Page title and filters */}
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+                {/* Header & Filters with motion like Home */}
+                <motion.div
+                    className="flex flex-col md:flex-row md:items-center md:justify-between mb-8"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4 }}
+                >
                     <h1 className="text-4xl font-bold mb-4 md:mb-0">
                         {regionFilter === "All" && countryFilter === "All"
-                            ? "All Celebrities"
+                            ? "Popular Celebrities"
                             : countryFilter !== "All"
                             ? `Celebrities from ${countryFilter}`
                             : `Celebrities in ${regionFilter}`}
                     </h1>
 
                     <div className="flex gap-3">
-
-                        {/* Region filter */}
                         <div className="form-control w-44">
                             <label className="label">
                                 <span className="label-text text-lg font-semibold">Region</span>
@@ -206,7 +173,6 @@ export default function Celebrities({ searchText }) {
                             </select>
                         </div>
 
-                        {/* Country filter */}
                         <div className="form-control w-56">
                             <label className="label">
                                 <span className="label-text text-lg font-semibold">Country</span>
@@ -222,11 +188,10 @@ export default function Celebrities({ searchText }) {
                                 ))}
                             </select>
                         </div>
-
                     </div>
-                </div>
+                </motion.div>
 
-                {/* Loading state */}
+                {/* Loading */}
                 {loading ? (
                     <div className="flex flex-col justify-center items-center h-96">
                         <span className="loading loading-spinner loading-lg text-primary mb-4"></span>
@@ -234,9 +199,14 @@ export default function Celebrities({ searchText }) {
                     </div>
                 ) : (
                     <>
-                        {/* Celebrity grid */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
-                            {filteredCelebs.map((c) => (
+                        {/* Celebrity grid with fade like Home */}
+                        <motion.div
+                            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.4 }}
+                        >
+                            {filteredCelebs.map(c => (
                                 <CelebrityCard
                                     key={c.id}
                                     name={c.name}
@@ -245,9 +215,8 @@ export default function Celebrities({ searchText }) {
                                     birthplace={c.birthplace}
                                 />
                             ))}
-                        </div>
+                        </motion.div>
 
-                        {/* Load more button */}
                         {hasMore && (
                             <div className="flex justify-center mb-12">
                                 <button

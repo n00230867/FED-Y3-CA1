@@ -1,125 +1,179 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { motion } from "motion/react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import CelebrityCard from "../components/CelebrityCard";
 import CountryCard from "../components/CountryCard";
-import { motion, stagger } from "motion/react";
 
-export default function Home({ searchText }) {
-    const [countriesList, setCountriesList] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [filterRegion, setFilterRegion] = useState("All");
+function ScrollRow({ children }) {
+    const ref = useRef(null);
+
+    const scroll = direction => {
+        if (!ref.current) return;
+        const amount = 320;
+        ref.current.scrollBy({
+            left: direction === "left" ? -amount : amount,
+            behavior: "smooth"
+        });
+    };
+
+    return (
+        <div className="relative w-full space-y-3">
+
+            {/* Scroll arrows */}
+            <div className="flex justify-between px-1">
+                <button
+                    onClick={() => scroll("left")}
+                    className="btn btn-circle btn-sm bg-base-200/80 backdrop-blur border border-base-300 hover:bg-base-200 hover:scale-105 transition shadow-md"
+                >
+                    ❮
+                </button>
+                <button
+                    onClick={() => scroll("right")}
+                    className="btn btn-circle btn-sm bg-base-200/80 backdrop-blur border border-base-300 hover:bg-base-200 hover:scale-105 transition shadow-md"
+                >
+                    ❯
+                </button>
+            </div>
+
+            <div
+                ref={ref}
+                className="flex gap-4 overflow-x-auto scroll-smooth pb-2 
+                [scrollbar-width:none]
+                [&::-webkit-scrollbar]:hidden"
+            >
+                {children}
+            </div>
+        </div>
+    );
+}
+
+export default function Home() {
+    const [celebs, setCelebs] = useState([]);
+    const [countries, setCountries] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        axios
-            .get("https://restcountries.com/v3.1/all?fields=flags,flag,name,capital,cca3,region")
-            .then((response) => setCountriesList(response.data))
-            .catch((error) => console.error("Error fetching countries:", error))
-            .finally(() => setLoading(false));
+        async function fetchCountries() {
+            try {
+                const res = await axios.get(
+                    "https://restcountries.com/v3.1/all?fields=flags,name,capital,cca3,region"
+                );
+                setCountries(res.data.slice(0, 10));
+            } catch {
+                console.log("Country fetch error");
+            }
+        }
+
+        async function fetchCelebs() {
+            try {
+                const res = await axios.get(
+                    `https://api.themoviedb.org/3/person/popular?api_key=${import.meta.env.VITE_TMDB_KEY}&page=1`
+                );
+
+                const detailed = await Promise.all(
+                    res.data.results.slice(0, 10).map(async person => {
+                        const info = await axios.get(
+                            `https://api.themoviedb.org/3/person/${person.id}?api_key=${import.meta.env.VITE_TMDB_KEY}`
+                        );
+
+                        return {
+                            id: person.id,
+                            name: person.name,
+                            img: person.profile_path
+                                ? `https://image.tmdb.org/t/p/w300${person.profile_path}`
+                                : null,
+                            birthplace: info.data.place_of_birth || "",
+                            knownFor: person.known_for_department
+                        };
+                    })
+                );
+
+                setCelebs(detailed);
+            } catch {
+                console.log("Celeb fetch error");
+            }
+        }
+
+        fetchCountries();
+        fetchCelebs();
     }, []);
-
-    const regions = ["All", "Africa", "Americas", "Asia", "Europe", "Oceania"];
-
-    const filteredCountries = countriesList
-        .filter(country => filterRegion === "All" || country.region === filterRegion)
-        .filter(country => country.name.common.toLowerCase().includes(searchText.toLowerCase()));
 
     return (
         <div className="min-h-screen bg-base-100 text-base-content">
-            <div className="max-w-7xl mx-auto p-6">
+            <div className="max-w-7xl mx-auto p-6 space-y-12">
 
-                <motion.div
-                    className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8"
-                    initial={{ opacity: 0, y: -8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                >
-                    <motion.h1
-                        className="text-4xl font-bold mb-4 sm:mb-0"
-                        animate={{ y: [0, -3, 0] }}
-                        transition={{
-                            duration: 4,
-                            repeat: Infinity,
-                            ease: "easeInOut"
-                        }}
-                    >
-                        {filterRegion === "All"
-                            ? "All Countries"
-                            : `Countries in ${filterRegion}`}
-                    </motion.h1>
-
-                    <div className="form-control w-56">
-                        <label className="label">
-                            <span className="label-text text-lg font-semibold">
-                                Filter by Region
-                            </span>
-                        </label>
-
-                        <select
-                            className="select select-bordered select-primary"
-                            value={filterRegion}
-                            onChange={(e) => setFilterRegion(e.target.value)}
+                {/* Countries */}
+                <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                        <h2 className="text-3xl font-bold">Featured Countries</h2>
+                        <button
+                            onClick={() => navigate("/countries")}
+                            className="btn btn-primary btn-outline btn-sm rounded-full"
                         >
-                            {regions.map((region) => (
-                                <option key={region} value={region}>
-                                    {region}
-                                </option>
-                            ))}
-                        </select>
+                            View All
+                        </button>
                     </div>
-                </motion.div>
 
-                {loading ? (
-                    <div className="flex flex-col items-center justify-center h-96 text-neutral-content">
-                        <span className="loading loading-spinner loading-lg text-primary mb-4"></span>
-                        <p className="text-lg">Loading countries...</p>
-                    </div>
-                ) : (
                     <motion.div
-                        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"
                         initial={{ opacity: 0 }}
-                        animate={{
-                            opacity: 1,
-                            transition: {
-                                delay: 0.2,
-                                staggerChildren: stagger(0.08)
-                            }
-                        }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.4 }}
                     >
-                        {filteredCountries.map((country) => (
-                            <motion.div
-                                key={country.cca3}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.45 }}
-                                whileHover={{
-                                    scale: 1.04,
-                                    rotateX: 6,
-                                    rotateY: -6,
-                                    boxShadow: "0px 12px 24px rgba(0,0,0,0.15)"
-                                }}
-                                whileTap={{ scale: 0.98, rotateX: 0, rotateY: 0 }}
-                                style={{ transformStyle: "preserve-3d" }}
-                                className="relative"
-                            >
+                        <ScrollRow>
+                            {countries.map(country => (
                                 <motion.div
-                                    className="absolute inset-0 rounded-xl pointer-events-none"
-                                    style={{
-                                        background:
-                                            "radial-gradient(circle at center, rgba(0,150,255,0.2), transparent 70%)"
-                                    }}
-                                    initial={{ opacity: 0 }}
-                                    whileHover={{ opacity: 1, scale: 1.4 }}
-                                    transition={{ duration: 0.4 }}
-                                />
-
-                                <CountryCard
-                                    flagImg={country.flags.png}
-                                    name={country.name.common}
-                                    capital={country.capital || ["N/A"]}
-                                />
-                            </motion.div>
-                        ))}
+                                    key={country.cca3}
+                                    whileHover={{ scale: 1.05 }}
+                                    className="min-w-[200px]"
+                                >
+                                    <CountryCard
+                                        flagImg={country.flags.png}
+                                        name={country.name.common}
+                                        capital={country.capital || ["N/A"]}
+                                    />
+                                </motion.div>
+                            ))}
+                        </ScrollRow>
                     </motion.div>
-                )}
+                </div>
+
+                {/* Celebrities */}
+                <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                        <h2 className="text-3xl font-bold">Trending Celebrities</h2>
+                        <button
+                            onClick={() => navigate("/celebrities")}
+                            className="btn btn-primary btn-outline btn-sm rounded-full"
+                        >
+                            View All
+                        </button>
+                    </div>
+
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.4 }}
+                    >
+                        <ScrollRow>
+                            {celebs.map(c => (
+                                <motion.div
+                                    key={c.id}
+                                    whileHover={{ scale: 1.05 }}
+                                    className="min-w-[200px]"
+                                >
+                                    <CelebrityCard
+                                        name={c.name}
+                                        img={c.img}
+                                        knownFor={c.knownFor}
+                                        birthplace={c.birthplace}
+                                    />
+                                </motion.div>
+                            ))}
+                        </ScrollRow>
+                    </motion.div>
+                </div>
+
             </div>
         </div>
     );

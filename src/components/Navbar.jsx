@@ -18,6 +18,13 @@ const Navbar = ({ setSearchText }) => {
                 </Link>
 
                 <Link
+                    to="/countries"
+                    className="btn btn-ghost normal-case text-lg font-semibold text-base-content hover:text-primary"
+                >
+                    Countries
+                </Link>
+
+                <Link
                     to="/celebrities"
                     className="btn btn-ghost normal-case text-lg font-semibold text-base-content hover:text-primary"
                 >

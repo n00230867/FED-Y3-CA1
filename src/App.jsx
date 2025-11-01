@@ -4,9 +4,11 @@ import './style/App.css';
 
 // components
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 
 // pages
 import Home from './pages/Home';
+import Countries from './pages/Countries';
 import Celebrities from './pages/Celebrities';
 import SingleCelebrity from './pages/SingleCelebrity';
 import SingleCountry from './pages/SingleCountry';
@@ -20,10 +22,12 @@ export default function App() {
                 <Navbar setSearchText={setSearchText} />
                 <Routes>
                     <Route path='/' element={<Home searchText={searchText} />} />
+                    <Route path='/countries' element={<Countries searchText={searchText} />} />
                     <Route path='/celebrities' element={<Celebrities searchText={searchText} />} />
                     <Route path='/country/:name' element={<SingleCountry />} />
                     <Route path='/celebrity/:name' element={<SingleCelebrity />} />
                 </Routes>
+                <Footer />
             </Router>
         </>
     );
