@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import CelebrityCard from "../components/CelebrityCard";
-import { motion } from "motion/react";
+import { motion, stagger } from "motion/react";
 import { useLocation } from "react-router-dom";
 
 export default function Celebrities({ searchText }) {
@@ -24,9 +24,7 @@ export default function Celebrities({ searchText }) {
         try {
             setLoadingMore(true);
             const res = await axios.get(
-                `https://api.themoviedb.org/3/person/popular?api_key=${
-                    import.meta.env.VITE_TMDB_KEY
-                }&page=${page}`
+                `https://api.themoviedb.org/3/person/popular?api_key=${import.meta.env.VITE_TMDB_KEY}&page=${page}`
             );
 
             if (!res.data.results.length) {
@@ -37,9 +35,7 @@ export default function Celebrities({ searchText }) {
             const detailed = await Promise.all(
                 res.data.results.map(async person => {
                     const info = await axios.get(
-                        `https://api.themoviedb.org/3/person/${person.id}?api_key=${
-                            import.meta.env.VITE_TMDB_KEY
-                        }`
+                        `https://api.themoviedb.org/3/person/${person.id}?api_key=${import.meta.env.VITE_TMDB_KEY}`
                     );
 
                     return {
@@ -109,11 +105,15 @@ export default function Celebrities({ searchText }) {
             setCountryOptions(countries.map(c => c.name).sort());
         } else {
             setCountryOptions(
-                countries.filter(c => c.region === regionFilter).map(c => c.name).sort()
+                countries
+                    .filter(c => c.region === regionFilter)
+                    .map(c => c.name)
+                    .sort()
             );
         }
         setCountryFilter("All");
     }, [regionFilter, countries]);
+
 
     function findCountryFromBirthplace(place) {
         if (!place) return null;
@@ -142,12 +142,11 @@ export default function Celebrities({ searchText }) {
         <div className="min-h-screen bg-base-100 text-base-content">
             <div className="max-w-7xl mx-auto p-6">
 
-                {/* Header & Filters with motion like Home */}
                 <motion.div
                     className="flex flex-col md:flex-row md:items-center md:justify-between mb-8"
-                    initial={{ opacity: 0, y: -10 }}
+                    initial={{ opacity: 0, y: -8 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4 }}
+                    transition={{ duration: 0.5 }}
                 >
                     <h1 className="text-4xl font-bold mb-4 md:mb-0">
                         {regionFilter === "All" && countryFilter === "All"
@@ -156,42 +155,8 @@ export default function Celebrities({ searchText }) {
                             ? `Celebrities from ${countryFilter}`
                             : `Celebrities in ${regionFilter}`}
                     </h1>
-
-                    <div className="flex gap-3">
-                        <div className="form-control w-44">
-                            <label className="label">
-                                <span className="label-text text-lg font-semibold">Region</span>
-                            </label>
-                            <select
-                                className="select select-bordered select-primary"
-                                value={regionFilter}
-                                onChange={e => setRegionFilter(e.target.value)}
-                            >
-                                {regions.map((r, i) => (
-                                    <option key={i} value={r}>{r}</option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <div className="form-control w-56">
-                            <label className="label">
-                                <span className="label-text text-lg font-semibold">Country</span>
-                            </label>
-                            <select
-                                className="select select-bordered select-primary"
-                                value={countryFilter}
-                                onChange={e => setCountryFilter(e.target.value)}
-                            >
-                                <option value="All">All</option>
-                                {countryOptions.map((c, i) => (
-                                    <option key={i} value={c}>{c}</option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
                 </motion.div>
 
-                {/* Loading */}
                 {loading ? (
                     <div className="flex flex-col justify-center items-center h-96">
                         <span className="loading loading-spinner loading-lg text-primary mb-4"></span>
@@ -199,26 +164,56 @@ export default function Celebrities({ searchText }) {
                     </div>
                 ) : (
                     <>
-                        {/* Celebrity grid with fade like Home */}
                         <motion.div
-                            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8"
+                            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"
                             initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ duration: 0.4 }}
+                            animate={{
+                                opacity: 1,
+                                transition: {
+                                    delay: 0.2,
+                                    staggerChildren: stagger(0.08),
+                                },
+                            }}
                         >
-                            {filteredCelebs.map(c => (
-                                <CelebrityCard
+                            {filteredCelebs.map((c) => (
+                                <motion.div
                                     key={c.id}
-                                    name={c.name}
-                                    img={c.img}
-                                    knownFor={c.knownFor}
-                                    birthplace={c.birthplace}
-                                />
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.45 }}
+                                    whileHover={{
+                                        scale: 1.04,
+                                        rotateX: 6,
+                                        rotateY: -6,
+                                        boxShadow: "0px 12px 24px rgba(0,0,0,0.15)",
+                                    }}
+                                    whileTap={{ scale: 0.98 }}
+                                    style={{ transformStyle: "preserve-3d" }}
+                                    className="relative"
+                                >
+                                    <motion.div
+                                        className="absolute inset-0 rounded-xl pointer-events-none"
+                                        style={{
+                                            background:
+                                                "radial-gradient(circle at center, rgba(0,150,255,0.2), transparent 70%)",
+                                        }}
+                                        initial={{ opacity: 0 }}
+                                        whileHover={{ opacity: 1, scale: 1.4 }}
+                                        transition={{ duration: 0.4 }}
+                                    />
+
+                                    <CelebrityCard
+                                        name={c.name}
+                                        img={c.img}
+                                        knownFor={c.knownFor}
+                                        birthplace={c.birthplace}
+                                    />
+                                </motion.div>
                             ))}
                         </motion.div>
 
                         {hasMore && (
-                            <div className="flex justify-center mb-12">
+                            <div className="flex justify-center my-12">
                                 <button
                                     className="btn btn-primary"
                                     onClick={loadMoreCelebs}
