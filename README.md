@@ -1,30 +1,30 @@
 # Fed-Y3-CA1
 
-This project is a front-end website created for a Year 3 Front End Development coursework assignment. The goal of the project is to demonstrate responsive layout, accessible design, and core web development skills.
+This project is a React based front end web application created for a Year 3 Front End Development coursework assignment. It focuses on responsive layout, accessible design, and modern component based UI development.
 
-**Live site:** https://fed-y3-ca1.firebaseapp.com
+Live site: https://fed-y3-ca1.firebaseapp.com
 
 ## Features
-
-- Responsive page layout  
-- Clean and simple UI  
-- Built with vanilla HTML, CSS, and JavaScript  
-- Hosted on Firebase  
+- Built with React
+- Responsive design
+- Clean and simple UI
+- Component based structure
+- Deployed on Firebase Hosting
 
 ## Technologies Used
+- React
+- JavaScript / JSX
+- CSS
+- Firebase Hosting
 
-- HTML5  
-- CSS3  
-- JavaScript  
-- Firebase Hosting  
+## Installation and Local Development
+1. Clone the repository: git clone https://github.com/your-username/fed-y3-ca1.git
+2. Navigate to the folder: cd fed-y3-ca1
+3. Install dependencies: npm install
+4. Start development server: npm run dev (or npm start if using Create React App)
 
-## How to View Locally
-
-1. Clone or download this repository  
-2. Open `index.html` in a web browser  
-
-No additional setup is required.
+## Build for Production
+Run: npm run build
 
 ## Purpose
-
-This project was created for academic coursework and personal learning. It focuses on front-end fundamentals including page structure, layout, and client-side interaction.
+This project was created for academic coursework and personal learning. It demonstrates modern front end fundamentals using React, including component structure, responsive UI, and client side interaction.
