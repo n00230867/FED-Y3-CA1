@@ -114,7 +114,6 @@ export default function Celebrities({ searchText }) {
         setCountryFilter("All");
     }, [regionFilter, countries]);
 
-
     function findCountryFromBirthplace(place) {
         if (!place) return null;
         const text = place.toLowerCase();
@@ -143,18 +142,69 @@ export default function Celebrities({ searchText }) {
             <div className="max-w-7xl mx-auto p-6">
 
                 <motion.div
-                    className="flex flex-col md:flex-row md:items-center md:justify-between mb-8"
+                    className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8"
                     initial={{ opacity: 0, y: -8 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <h1 className="text-4xl font-bold mb-4 md:mb-0">
+                    <motion.h1
+                        className="text-4xl font-bold mb-4 sm:mb-0"
+                        animate={{ y: [0, -3, 0] }}
+                        transition={{
+                            duration: 4,
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                        }}
+                    >
                         {regionFilter === "All" && countryFilter === "All"
                             ? "Popular Celebrities"
                             : countryFilter !== "All"
                             ? `Celebrities from ${countryFilter}`
                             : `Celebrities in ${regionFilter}`}
-                    </h1>
+                    </motion.h1>
+
+                    <div className="flex flex-col sm:flex-row gap-6 sm:items-end">
+
+                        <div className="form-control w-56">
+                            <label className="label">
+                                <span className="label-text text-lg font-semibold">
+                                    Filter by Region
+                                </span>
+                            </label>
+                            <select
+                                className="select select-bordered select-primary"
+                                value={regionFilter}
+                                onChange={(e) => setRegionFilter(e.target.value)}
+                            >
+                                {regions.map((region) => (
+                                    <option key={region} value={region}>
+                                        {region}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className="form-control w-56">
+                            <label className="label">
+                                <span className="label-text text-lg font-semibold">
+                                    Filter by Country
+                                </span>
+                            </label>
+                            <select
+                                className="select select-bordered select-primary"
+                                value={countryFilter}
+                                onChange={(e) => setCountryFilter(e.target.value)}
+                            >
+                                <option value="All">All</option>
+                                {countryOptions.map((country) => (
+                                    <option key={country} value={country}>
+                                        {country}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                    </div>
                 </motion.div>
 
                 {loading ? (

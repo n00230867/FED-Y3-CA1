@@ -114,7 +114,6 @@ export default function SingleCelebrity() {
                     <p className="opacity-70 mt-1 text-sm">{celeb.known_for_department}</p>
                 </motion.div>
 
-                {/* Grid: Left = profile, Right = bio */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
                     {/* Profile card */}

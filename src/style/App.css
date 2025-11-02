@@ -1,5 +1,6 @@
 @import "tailwindcss";
-@plugin "daisyui" {
-  themes: dim --default;
-}
 
+/* DaisyUI config for Tailwind v4 */
+@plugin "daisyui" {
+  themes: dark --default, corporate;
+}
