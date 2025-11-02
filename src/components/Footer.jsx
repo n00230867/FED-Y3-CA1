@@ -1,6 +1,17 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+
+import logoDark from "../assets/logo-light.png";   // white logo for dark theme
+import logoLight from "../assets/logo-dark.png";   // black logo for light theme
 
 export default function Footer() {
+    const [theme, setTheme] = useState("dark");
+
+    useEffect(() => {
+        const currentTheme = document.documentElement.getAttribute("data-theme");
+        if (currentTheme) setTheme(currentTheme);
+    }, []);
+
     return (
         <footer className="
             bg-base-200/90 backdrop-blur-lg 
@@ -9,8 +20,13 @@ export default function Footer() {
         ">
             <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col sm:flex-row justify-between items-center gap-4">
 
-                <div className="font-bold text-lg">
-                    CountriesApp
+                {/* Logo + Name */}
+                <div className="flex items-center gap-3">
+                    <img
+                        src={theme === "dark" ? logoDark : logoLight}
+                        alt="Logo"
+                        className="w-25 h-25 object-contain"
+                    />
                 </div>
 
                 <div className="flex gap-4 text-sm font-medium">
