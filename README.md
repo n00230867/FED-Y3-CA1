@@ -1,16 +1,30 @@
-# React + Vite
+# Fed-Y3-CA1
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a front-end website created for a Year 3 Front End Development coursework assignment. The goal of the project is to demonstrate responsive layout, accessible design, and core web development skills.
 
-Currently, two official plugins are available:
+**Live site:** https://fed-y3-ca1.firebaseapp.com
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## React Compiler
+- Responsive page layout  
+- Clean and simple UI  
+- Built with vanilla HTML, CSS, and JavaScript  
+- Hosted on Firebase  
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Technologies Used
 
-## Expanding the ESLint configuration
+- HTML5  
+- CSS3  
+- JavaScript  
+- Firebase Hosting  
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## How to View Locally
+
+1. Clone or download this repository  
+2. Open `index.html` in a web browser  
+
+No additional setup is required.
+
+## Purpose
+
+This project was created for academic coursework and personal learning. It focuses on front-end fundamentals including page structure, layout, and client-side interaction.
