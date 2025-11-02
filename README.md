@@ -14,6 +14,8 @@ Live site: https://fed-y3-ca1.firebaseapp.com
 ## Technologies Used
 - React
 - JavaScript / JSX
+- DaisyUI (Tailwind component library)
+- Motion (animation library)
 - CSS
 - Firebase Hosting
 
